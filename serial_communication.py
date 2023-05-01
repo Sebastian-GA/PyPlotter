@@ -5,8 +5,8 @@ from threading import Thread, Event
 class SerialCommunication:
     def __init__(self) -> None:
         self.device = None
+
         self.recieved_data = None
-        self.sent_data = None
 
         self.thread = None
         self.signal = Event()
@@ -18,9 +18,13 @@ class SerialCommunication:
         return serial.Serial.BAUDRATES
 
     def connect(self, port, baudrate):
-        self.device = serial.Serial(port, baudrate)
-        self.device.timeout = 0.1
+        if self.device is not None and self.device.is_open:
+            print("Device is already connected")
+            return False
+
         try:
+            self.device = serial.Serial(port, baudrate)
+            self.device.timeout = 0.1
             self.device.open()
         except:
             pass
@@ -28,9 +32,14 @@ class SerialCommunication:
             self.start_thread()
             print("Connected to {} at {} baud".format(port, baudrate))
             return True
+        print("Failed to connect")
         return False
 
     def disconnect(self):
+        if self.device is None or not self.device.is_open:
+            print("Device is already disconnected")
+            return False
+
         self.stop_thread()
         self.device.close()
         print("Disconnected")
@@ -60,11 +69,10 @@ class SerialCommunication:
 
     def send_data(self, data):
         if self.device.is_open:
-            self.sent_data = data + "\n"
-            self.device.write(self.sent_data.encode("utf-8"))
+            sent_data = data + "\n"
+            self.device.write(sent_data.encode("utf-8"))
             print("Sent: {}".format(data))
             return True
         else:
             print("Device is not connected")
             return False
-
