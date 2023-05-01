@@ -1,10 +1,11 @@
 # Window
-WIDTH = 400
-HEIGHT = 300
+WIDTH = 800
+HEIGHT = 400
 TITLE = "PicoTemp"
-BG = "#393646"
+BG1 = "#393646"
+BG2 = "#4F4557"
 FG = "#F4EEE0"
-FONT = ("Arial", 20)
+FONT = ("Arial", 16)
 
 # Plot
 PLOT_TITLE = "Temperature"

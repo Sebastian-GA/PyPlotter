@@ -1,8 +1,7 @@
 from tkinter import Tk, Frame, Button, Label, ttk, PhotoImage
 from constants import *
 from serial_communication import SerialCommunication
-
-# from plot import Plot
+from plot import Plot
 
 
 raspberry_pi = SerialCommunication()
@@ -16,56 +15,79 @@ class MainWindow:
         self.root.minsize(WIDTH, HEIGHT)
         self.root.resizable(0, 0)
 
-        self.root.configure(bg=BG)
-        title = Label(self.root, text=TITLE, bg=BG, fg=FG, font=FONT)
-        title.pack()
+        self.root.configure(bg=BG1, width=WIDTH, height=HEIGHT)
+        self.root.columnconfigure(0, weight=2)
+        self.root.columnconfigure(1, weight=1)
+        self.root.rowconfigure(0, weight=1)
+
+        # -------- Options Frame -------- #
+        self.right_frame = Frame(self.root, bg=BG2)
+        self.right_frame.grid(row=0, column=1, sticky="nse", padx=20, pady=20)
+
+        self.options_frame = Frame(self.right_frame, bg=BG2)
+        self.options_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        for i in range(4):
+            self.options_frame.rowconfigure(i, pad=10)
+            self.options_frame.columnconfigure(0, pad=10)
+
+        title = Label(
+            self.options_frame, text=TITLE, bg=BG2, fg=FG, font=FONT, justify="center"
+        )
+        title.grid(row=0, column=0, columnspan=2, sticky="we", padx=10)
+
+        # -------- Entries -------- #
+        # PORT ENTRY
+        Label(self.options_frame, text="Port:", bg=BG2, fg=FG).grid(
+            row=1, column=0, sticky="w"
+        )
+        self.port_entry = ttk.Combobox(
+            self.options_frame,
+            values=raspberry_pi.get_ports(),
+            state="readonly",
+            justify="center",
+            width=10,
+        )
+        self.port_entry.current(0)
+        self.port_entry.grid(row=1, column=1)
+
+        # BAUDRATE ENTRY
+        Label(self.options_frame, text="Baudrate:", bg=BG2, fg=FG).grid(
+            row=2, column=0, sticky="w"
+        )
+        self.baudrate_entry = ttk.Combobox(
+            self.options_frame,
+            values=raspberry_pi.get_baudrates(),
+            state="readonly",
+            justify="center",
+            width=10,
+        )
+        self.baudrate_entry.current(12)
+        self.baudrate_entry.grid(row=2, column=1)
 
         # -------- Buttons -------- #
-        self.options_frame = Frame(self.root, bg=BG)
-        self.options_frame.pack()
-
         # CONNECT BUTTON
         self.connect_button = Button(
             self.options_frame,
             text="Connect",
-            bg=BG,
+            bg=BG1,
             fg=FG,
-            font=FONT,
             command=self.connect,
         )
-        self.connect_button.pack()
+        self.connect_button.grid(
+            row=3, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
+        )
 
         # REFRESH BUTTON
         self.refresh_button = Button(
             self.options_frame,
             text="Refresh",
-            bg=BG,
+            bg=BG1,
             fg=FG,
-            font=FONT,
             command=self.refresh,
         )
-        self.refresh_button.pack()
-
-        # -------- Entries -------- #
-        # PORT ENTRY
-        self.port_entry = ttk.Combobox(
-            self.options_frame,
-            values=raspberry_pi.get_ports(),
-            state="readonly",
-            font=FONT,
+        self.refresh_button.grid(
+            row=4, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
         )
-        self.port_entry.pack()
-        self.port_entry.current(0)
-
-        # BAUDRATE ENTRY
-        self.baudrate_entry = ttk.Combobox(
-            self.options_frame,
-            values=raspberry_pi.get_baudrates(),
-            state="readonly",
-            font=FONT,
-        )
-        self.baudrate_entry.pack()
-        self.baudrate_entry.current(12)
 
         # -------- Plot -------- #
         # self.plot = Plot(self.root, raspberry_pi)
