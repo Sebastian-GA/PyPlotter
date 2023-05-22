@@ -13,12 +13,14 @@ class MainWindow:
         self.root.title(TITLE)
         self.root.geometry("{}x{}".format(WIDTH, HEIGHT))
         self.root.minsize(WIDTH, HEIGHT)
-        self.root.resizable(0, 0)
+        self.root.resizable(1, 1)
 
         self.root.configure(bg=BG1, width=WIDTH, height=HEIGHT)
         self.root.columnconfigure(0, weight=2)
         self.root.columnconfigure(1, weight=1)
         self.root.rowconfigure(0, weight=1)
+
+        self.root.protocol("WM_DELETE_WINDOW", self.close)  # Close everything
 
         # -------- Options Frame -------- #
         self.right_frame = Frame(self.root, bg=BG2)
@@ -91,6 +93,7 @@ class MainWindow:
 
         # -------- Plot -------- #
         # self.plot = Plot(self.root, raspberry_pi)
+        # self.plot.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
     def run(self):
         self.root.mainloop()
@@ -116,6 +119,10 @@ class MainWindow:
         self.port_entry.current(0)
         self.baudrate_entry.configure(values=raspberry_pi.get_baudrates())
         self.baudrate_entry.current(12)
+
+    def close(self):
+        self.disconnect()
+        self.root.quit()
 
 
 if __name__ == "__main__":
