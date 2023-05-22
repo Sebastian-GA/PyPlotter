@@ -8,6 +8,7 @@ FG = "#F4EEE0"
 FONT = ("Arial", 16)
 
 # Plot
-PLOT_TITLE = "Temperature"
+PLOT_TITLE = "Temperature over time"
 PLOT_X_LIM = 100
 PLOT_Y_LIMS = [0, 100]
+PLOT_LINE_COLOR = "#F4EEE0"

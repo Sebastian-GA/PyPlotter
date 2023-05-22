@@ -6,7 +6,7 @@ class SerialCommunication:
     def __init__(self) -> None:
         self.device = None
 
-        self.recieved_data = None
+        self.received_data = None
 
         self.thread = None
         self.signal = Event()
@@ -61,11 +61,15 @@ class SerialCommunication:
             while self.signal.is_set() and self.device.is_open:
                 data = self.device.readline().decode("utf-8").strip()
                 if len(data) > 0:
-                    self.recieved_data = data
+                    self.received_data = data
+                    self._process_data()
                     print("Recieved: {}".format(data))
         except:
             pass
         return "Finished"
+
+    def _process_data(self):
+        pass
 
     def send_data(self, data):
         if self.device.is_open:

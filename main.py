@@ -1,10 +1,10 @@
 from tkinter import Tk, Frame, Button, Label, ttk, PhotoImage
 from constants import *
-from serial_communication import SerialCommunication
+from device import Device
 from plot import Plot
 
 
-raspberry_pi = SerialCommunication()
+raspberry_pi = Device()
 
 
 class MainWindow:
@@ -91,9 +91,33 @@ class MainWindow:
             row=4, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
         )
 
+        # START/PAUSE BUTTON
+        self.start_pause_button = Button(
+            self.options_frame,
+            text="Pause",
+            bg=BG1,
+            fg=FG,
+            command=self.pause,
+        )
+        self.start_pause_button.grid(
+            row=5, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
+        )
+
+        # CLEAR BUTTON
+        self.clear_button = Button(
+            self.options_frame,
+            text="Clear",
+            bg=BG1,
+            fg=FG,
+            command=self.clear,
+        )
+        self.clear_button.grid(
+            row=6, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
+        )
+
         # -------- Plot -------- #
-        # self.plot = Plot(self.root, raspberry_pi)
-        # self.plot.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        self.plot = Plot(self.root, raspberry_pi)
+        self.plot.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
     def run(self):
         self.root.mainloop()
@@ -119,6 +143,17 @@ class MainWindow:
         self.port_entry.current(0)
         self.baudrate_entry.configure(values=raspberry_pi.get_baudrates())
         self.baudrate_entry.current(12)
+
+    def pause(self):
+        self.plot.pause()
+        self.start_pause_button.configure(text="Start", command=self.start)
+
+    def start(self):
+        self.plot.start()
+        self.start_pause_button.configure(text="Pause", command=self.pause)
+
+    def clear(self):
+        self.plot.clear()
 
     def close(self):
         self.disconnect()
