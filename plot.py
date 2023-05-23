@@ -21,8 +21,8 @@ class Plot(Frame):
         plt.title(PLOT_TITLE, color=FG, size=FONT[1], family=FONT[0])
         plt.xlim(0, PLOT_X_LIM)
         plt.ylim(PLOT_Y_LIMS)
-        plt.xlabel("Samples", color=FG, size=FONT[1], family=FONT[0])
-        plt.ylabel("Temperature (°C)", color=FG, size=FONT[1], family=FONT[0])
+        plt.xlabel(PLOT_X_LABEL, color=FG, size=FONT[1], family=FONT[0])
+        plt.ylabel(PLOT_Y_LABEL, color=FG, size=FONT[1], family=FONT[0])
 
         ax.tick_params(
             direction="out", length=5, width=2, colors=FG, grid_color=FG, grid_alpha=0.5
