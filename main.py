@@ -5,7 +5,7 @@ from device import Device
 from plot import Plot
 
 
-raspberry_pi = Device()
+microcontroller = Device()
 
 
 class MainWindow:
@@ -49,7 +49,7 @@ class MainWindow:
         )
         self.port_entry = ttk.Combobox(
             self.options_frame,
-            values=raspberry_pi.get_ports(),
+            values=microcontroller.get_ports(),
             state="readonly",
             justify="center",
             width=10,
@@ -63,7 +63,7 @@ class MainWindow:
         )
         self.baudrate_entry = ttk.Combobox(
             self.options_frame,
-            values=raspberry_pi.get_baudrates(),
+            values=microcontroller.get_baudrates(),
             state="readonly",
             justify="center",
             width=10,
@@ -121,7 +121,7 @@ class MainWindow:
         )
 
         # -------- Plot -------- #
-        self.plot = Plot(self.root, raspberry_pi)
+        self.plot = Plot(self.root, microcontroller)
         self.plot.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
 
     def run(self):
@@ -130,23 +130,23 @@ class MainWindow:
     def connect(self):
         port = self.port_entry.get()
         baudrate = self.baudrate_entry.get()
-        if raspberry_pi.connect(port, baudrate):
+        if microcontroller.connect(port, baudrate):
             self.connect_button.configure(text="Disconnect", command=self.disconnect)
             self.refresh_button.configure(state="disabled")
             self.port_entry.configure(state="disabled")
             self.baudrate_entry.configure(state="disabled")
 
     def disconnect(self):
-        raspberry_pi.disconnect()
+        microcontroller.disconnect()
         self.connect_button.configure(text="Connect", command=self.connect)
         self.refresh_button.configure(state="normal")
         self.port_entry.configure(state="normal")
         self.baudrate_entry.configure(state="normal")
 
     def refresh(self):
-        self.port_entry.configure(values=raspberry_pi.get_ports())
+        self.port_entry.configure(values=microcontroller.get_ports())
         self.port_entry.current(0)
-        self.baudrate_entry.configure(values=raspberry_pi.get_baudrates())
+        self.baudrate_entry.configure(values=microcontroller.get_baudrates())
         self.baudrate_entry.current(12)
 
     def pause(self):
