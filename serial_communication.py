@@ -17,9 +17,10 @@ class SerialCommunication:
     def get_baudrates(self):
         return serial.Serial.BAUDRATES
 
-    def connect(self, port, baudrate):
+    def connect(self, port, baudrate, verbose=True):
         if self.device is not None and self.device.is_open:
-            print("Device is already connected")
+            if verbose:
+                print("Device is already connected")
             return False
 
         try:
@@ -28,21 +29,27 @@ class SerialCommunication:
             self.device.open()
         except:
             pass
+
         if self.device.is_open:
             self.start_thread()
-            print("Connected to {} at {} baud".format(port, baudrate))
+            if verbose:
+                print("Connected to {} at {} baud".format(port, baudrate))
             return True
-        print("Failed to connect")
+
+        if verbose:
+            print("Failed to connect")
         return False
 
-    def disconnect(self):
+    def disconnect(self, verbose=True):
         if self.device is None or not self.device.is_open:
-            print("Device is already disconnected")
+            if verbose:
+                print("Device is already disconnected")
             return False
 
         self.stop_thread()
         self.device.close()
-        print("Disconnected")
+        if verbose:
+            print("Disconnected")
 
     def start_thread(self):
         self.thread = Thread(target=self.read_data)
@@ -56,14 +63,15 @@ class SerialCommunication:
             self.thread.join()
             self.thread = None
 
-    def read_data(self):
+    def read_data(self, verbose=True):
         try:
             while self.signal.is_set() and self.device.is_open:
                 data = self.device.readline().decode("utf-8").strip()
                 if len(data) > 0:
                     self.received_data = data
                     self._process_data()
-                    print("Recieved: {}".format(data))
+                    if verbose:
+                        print("Recieved: {}".format(data))
         except:
             pass
         return "Finished"
@@ -71,12 +79,14 @@ class SerialCommunication:
     def _process_data(self):
         pass
 
-    def send_data(self, data):
+    def send_data(self, data, verbose=True):
         if self.device.is_open:
             sent_data = data + "\n"
             self.device.write(sent_data.encode("utf-8"))
-            print("Sent: {}".format(data))
+            if verbose:
+                print("Sent: {}".format(data))
             return True
         else:
-            print("Device is not connected")
+            if verbose:
+                print("Device is not connected")
             return False

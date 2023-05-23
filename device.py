@@ -34,3 +34,16 @@ class Device(SerialCommunication):
         for signal in self.signals:
             for _ in range(len(signal)):
                 signal.append(0)
+
+    # Verbose is set to False to prevent printing to console
+    def connect(self, port, baudrate):
+        return super().connect(port, baudrate, verbose=False)
+
+    def disconnect(self):
+        return super().disconnect(verbose=False)
+
+    def read_data(self):
+        return super().read_data(verbose=False)
+
+    def send_data(self, data, verbose=True):
+        return super().send_data(data, verbose=False)

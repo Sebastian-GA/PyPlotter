@@ -55,7 +55,9 @@ class Plot(Frame):
         self.line.set_data(range(self.max_data), self.data)
 
     def start(self):
-        self.ani = animation.FuncAnimation(self.fig, self.animate, interval=100)
+        self.ani = animation.FuncAnimation(
+            self.fig, self.animate, interval=100, cache_frame_data=False
+        )
         self.canvas.draw()
 
     def pause(self):
@@ -64,3 +66,4 @@ class Plot(Frame):
     def clear(self):
         self.device.clear_data()
         self.line.set_data(range(self.max_data), self.data)
+        self.canvas.draw()

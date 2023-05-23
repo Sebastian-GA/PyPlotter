@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import Tk, Frame, Button, Label, ttk, PhotoImage
 from constants import *
 from device import Device
@@ -22,12 +23,16 @@ class MainWindow:
 
         self.root.protocol("WM_DELETE_WINDOW", self.close)  # Close everything
 
+        self.root.columnconfigure(0, weight=5)
+        self.root.columnconfigure(1, weight=1, minsize=120)
+
         # -------- Options Frame -------- #
         self.right_frame = Frame(self.root, bg=BG2)
-        self.right_frame.grid(row=0, column=1, sticky="nse", padx=20, pady=20)
+        self.right_frame.grid(row=0, column=1, sticky="nsew", padx=(10, 20), pady=20)
 
         self.options_frame = Frame(self.right_frame, bg=BG2)
-        self.options_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        self.options_frame.place(relx=0.5, y=20, anchor=tk.N)  # Centered
+        # self.options_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
         for i in range(4):
             self.options_frame.rowconfigure(i, pad=10)
             self.options_frame.columnconfigure(0, pad=10)
@@ -100,7 +105,7 @@ class MainWindow:
             command=self.pause,
         )
         self.start_pause_button.grid(
-            row=5, column=0, columnspan=2, sticky="we", padx=20, pady=2, ipady=2
+            row=5, column=0, columnspan=2, sticky="we", padx=20, pady=(50, 8), ipady=2
         )
 
         # CLEAR BUTTON
@@ -117,7 +122,7 @@ class MainWindow:
 
         # -------- Plot -------- #
         self.plot = Plot(self.root, raspberry_pi)
-        self.plot.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        self.plot.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
 
     def run(self):
         self.root.mainloop()
