@@ -54,7 +54,6 @@ class MainWindow:
             justify="center",
             width=10,
         )
-        self.port_entry.current(0)
         self.port_entry.grid(row=1, column=1)
 
         # BAUDRATE ENTRY
@@ -68,8 +67,9 @@ class MainWindow:
             justify="center",
             width=10,
         )
-        self.baudrate_entry.current(12)
         self.baudrate_entry.grid(row=2, column=1)
+
+        self.refresh()  # Update port and baudrate entries
 
         # -------- Buttons -------- #
         # CONNECT BUTTON
@@ -130,6 +130,9 @@ class MainWindow:
     def connect(self):
         port = self.port_entry.get()
         baudrate = self.baudrate_entry.get()
+        if port == "" or baudrate == "":
+            return
+
         if microcontroller.connect(port, baudrate):
             self.connect_button.configure(text="Disconnect", command=self.disconnect)
             self.refresh_button.configure(state="disabled")
@@ -145,9 +148,11 @@ class MainWindow:
 
     def refresh(self):
         self.port_entry.configure(values=microcontroller.get_ports())
-        self.port_entry.current(0)
+        if len(self.port_entry["values"]) > 0:
+            self.port_entry.current(0)
         self.baudrate_entry.configure(values=microcontroller.get_baudrates())
-        self.baudrate_entry.current(12)
+        if len(self.baudrate_entry["values"]) >= 12:
+            self.baudrate_entry.current(12)
 
     def pause(self):
         self.plot.pause()
