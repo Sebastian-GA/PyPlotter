@@ -3,6 +3,8 @@ from tkinter import Tk, Frame, Button, Label, ttk, PhotoImage
 from constants import *
 from device import Device
 from plot import Plot
+from threading import Thread, Event
+import time
 
 
 microcontroller = Device()
@@ -124,7 +126,14 @@ class MainWindow:
         self.plot = Plot(self.root, microcontroller)
         self.plot.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
 
+        # -------- Threads -------- #
+        self.thread = Thread(target=self.update_interface)
+        self.flag = Event()
+
     def run(self):
+        self.thread.daemon = True
+        self.flag.set()
+        self.thread.start()
         self.root.mainloop()
 
     def connect(self):
@@ -167,7 +176,22 @@ class MainWindow:
 
     def close(self):
         self.disconnect()
+        self.flag.clear()
+        self.thread.join()
+        self.thread = None
         self.root.quit()
+
+    def update_interface(self):
+        while self.flag.is_set():
+            if microcontroller.errorFlag.is_set():  # Disconnect if error
+                self.disconnect()
+                microcontroller.errorFlag.clear()
+
+            if not microcontroller.is_connected():  # Refresh list of ports
+                if set(microcontroller.get_ports()) != set(self.port_entry["values"]):
+                    self.refresh()
+
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":

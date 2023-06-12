@@ -8,6 +8,7 @@ class Device(SerialCommunication):
     def __init__(self, num_signals=1) -> None:
         super().__init__()
         self.max_data = PLOT_X_LIM
+        self.verbose = False
 
         self.signals = [
             collections.deque([0] * self.max_data, maxlen=self.max_data)
@@ -41,13 +42,13 @@ class Device(SerialCommunication):
 
     # Verbose is set to False to prevent printing to console
     def connect(self, port, baudrate):
-        return super().connect(port, baudrate, verbose=False)
+        return super().connect(port, baudrate, verbose=self.verbose)
 
     def disconnect(self):
-        return super().disconnect(verbose=False)
+        return super().disconnect(verbose=self.verbose)
 
     def read_data(self):
-        return super().read_data(verbose=False)
+        return super().read_data(verbose=self.verbose)
 
     def send_data(self, data, verbose=True):
-        return super().send_data(data, verbose=False)
+        return super().send_data(data, verbose=verbose)
