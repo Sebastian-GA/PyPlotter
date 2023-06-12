@@ -29,6 +29,9 @@ class SerialCommunication:
             self.device.open()
         except:
             pass
+            # if verbose:
+            #     print("Failed to connect")
+            # return False
 
         if self.device.is_open:
             self.start_thread()

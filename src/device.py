@@ -15,6 +15,10 @@ class Device(SerialCommunication):
         ]
 
     def _process_data(self):
+        if self.received_data == "clear":
+            self.clear_data()
+            return
+        
         data = self.received_data.split(",")
 
         if len(data) != len(self.signals):
