@@ -1,5 +1,6 @@
 import serial, serial.tools.list_ports
 from threading import Thread, Event
+import time
 
 
 class SerialCommunication:
@@ -31,14 +32,14 @@ class SerialCommunication:
             return False
 
         try:
-            self.device = serial.Serial(port, baudrate)
-            self.device.timeout = 0.1
+            self.device = serial.Serial(port, baudrate, timeout=0.1)
             self.device.open()
-        except:
+        except serial.SerialException:
             if verbose:
-                print("Maybe the port is already in use")
-            # pass
-            # return False
+                print("Permission denied. Maybe the port is already in use.")
+        except Exception as e:
+            if verbose:
+                print("Error while connecting to device. Error message:", str(e))
 
         if self.is_connected():
             self.start_thread()
@@ -77,6 +78,7 @@ class SerialCommunication:
         while self.flag.is_set() and self.device.is_open:
             try:
                 data = self.device.readline().decode("utf-8").strip()
+                # data = self.readline().decode("utf-8").strip()
                 if len(data) > 0:
                     self.received_data = data
                     self._process_data()
@@ -111,3 +113,18 @@ class SerialCommunication:
             if verbose:
                 print("Device is not connected")
             return False
+
+    # def readline(self, tout=1):
+    #     """Have to use this function instead of self.device.readline() because
+    #     self.device.readline() will block the program if there is no data to read
+    #     or maybe that happens when baudrate is not correct
+
+    #     Ref: https://stackoverflow.com/questions/3437303/python-pyserial-read-line-timeout#3437411
+    #     """
+
+    #     buff = self.device.read(128)
+    #     tic = time.time()
+    #     while ((time.time() - tic) < tout) and not ("\n" in buff):
+    #         buff += self.device.read(128)
+
+    #     return buff
