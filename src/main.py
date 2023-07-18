@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from constants import *
+from calibration_window import CalibrationWindow
 from device import Device
 from plot import Plot
 from threading import Thread, Event
@@ -129,10 +130,13 @@ class App(ctk.CTk):
             return
 
         if microcontroller.connect(port, baudrate):
-            self.connect_button.configure(text="Disconnect", command=self.disconnect)
-            self.refresh_button.configure(state="disabled")
-            self.port_entry.configure(state="disabled")
-            self.baudrate_entry.configure(state="disabled")
+            self.calibration_window = CalibrationWindow(self, microcontroller)
+
+    def connected(self):
+        self.connect_button.configure(text="Disconnect", command=self.disconnect)
+        self.refresh_button.configure(state="disabled")
+        self.port_entry.configure(state="disabled")
+        self.baudrate_entry.configure(state="disabled")
 
     def disconnect(self):
         microcontroller.disconnect()
@@ -180,6 +184,23 @@ class App(ctk.CTk):
                     self.refresh()
 
             time.sleep(0.1)
+    
+    def disable_interface(self):
+        self.connect_button.configure(state="disabled")
+        self.refresh_button.configure(state="disabled")
+        self.port_entry.configure(state="disabled")
+        self.baudrate_entry.configure(state="disabled")
+        self.start_pause_button.configure(state="disabled")
+        self.clear_button.configure(state="disabled")
+
+    def enable_interface(self):
+        self.connect_button.configure(state="normal")
+        self.refresh_button.configure(state="normal")
+        self.port_entry.configure(state="normal")
+        self.baudrate_entry.configure(state="normal")
+        self.start_pause_button.configure(state="normal")
+        self.clear_button.configure(state="normal")
+        
 
 
 if __name__ == "__main__":
