@@ -1,4 +1,4 @@
-from tkinter import Frame
+import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib import pyplot as plt
 from matplotlib import animation
@@ -7,17 +7,16 @@ import collections
 from constants import *
 
 
-class Plot(Frame):
+class Plot(ctk.CTkFrame):
     def __init__(self, master, device, *args):
         super().__init__(master, *args)
 
-        self.configure(bg=BG2)
         self.max_data = PLOT_X_LIM
         self.device = device
         self.data = device.signals[0]  # TODO: Plot multiple signals
 
         # Styling plot
-        self.fig, ax = plt.subplots(facecolor=BG2, dpi=70, figsize=(1, 1))
+        self.fig, ax = plt.subplots(facecolor=BG1, dpi=70, figsize=(1, 1))
         plt.title(PLOT_TITLE, color=FG, size=FONT[1], family=FONT[0])
         plt.xlim(0, PLOT_X_LIM)
         plt.ylim(PLOT_Y_LIMS)
@@ -27,7 +26,7 @@ class Plot(Frame):
         ax.tick_params(
             direction="out", length=5, width=2, colors=FG, grid_color=FG, grid_alpha=0.5
         )
-        ax.set_facecolor(BG1)
+        ax.set_facecolor(BG2)
         ax.spines["bottom"].set_color(BG1)
         ax.spines["top"].set_color(BG1)
         ax.spines["left"].set_color(BG1)
@@ -46,7 +45,7 @@ class Plot(Frame):
         )
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
-        self.canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
         self.start()
 
