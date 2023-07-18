@@ -2,10 +2,13 @@
 WIDTH = 800
 HEIGHT = 400
 TITLE = "PyPlotter"
-BG1 = "#393646"
-BG2 = "#4F4557"
-FG = "#F4EEE0"
+BG1 = "#212121"
+BG2 = "#292929"
+FG = "#DCE4EE"
 FONT = ("Arial", 16)
+
+APPEREANCE_MODE = "dark"  # "dark", "light" or "system"
+COLOR_THEME = "dark-blue" # "blue", "dark-blue" or "green"
 
 # Plot
 PLOT_TITLE = "Temperature Over Time"  # Change to signal name

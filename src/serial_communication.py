@@ -18,7 +18,7 @@ class SerialCommunication:
         return [port.device for port in serial.tools.list_ports.comports()]
 
     def get_baudrates(self):
-        return serial.Serial.BAUDRATES
+        return list(map(str, serial.Serial.BAUDRATES))
 
     def is_connected(self):
         if self.device is None:
