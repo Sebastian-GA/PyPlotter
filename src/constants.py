@@ -7,6 +7,9 @@ BG2 = "#4F4557"
 FG = "#F4EEE0"
 FONT = ("Arial", 16)
 
+APPEREANCE_MODE = "dark"  # "dark", "light" or "system"
+COLOR_THEME = "dark-blue" # "blue", "dark-blue" or "green"
+
 # Plot
 PLOT_TITLE = "Temperature Over Time"  # Change to signal name
 PLOT_X_LABEL = "Samples"
