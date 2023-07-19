@@ -26,6 +26,7 @@ class CalibrationWindow(ctk.CTkToplevel):
 
         # Progressbar
         self.progressbar = ctk.CTkProgressBar(self, orientation="horizontal")
+        self.progressbar.set(0)
         self.progressbar.pack()
 
         # -------- Thread -------- #
@@ -37,6 +38,8 @@ class CalibrationWindow(ctk.CTkToplevel):
 
     def _run(self):
         self.master.disable_interface()
+        self.focus_set()
+        time.sleep(2);
         self.device.calibrate()
 
         while self.flag.is_set():
@@ -62,5 +65,6 @@ class CalibrationWindow(ctk.CTkToplevel):
             self.master.disconnect()
 
         self.flag.clear()
+        time.sleep(0.02)
         self.thread = None
-        self.quit()
+        self.destroy()

@@ -8,7 +8,7 @@ FG = "#DCE4EE"
 FONT = ("Arial", 16)
 
 APPEREANCE_MODE = "dark"  # "dark", "light" or "system"
-COLOR_THEME = "dark-blue" # "blue", "dark-blue" or "green"
+COLOR_THEME = "blue" # "blue", "dark-blue" or "green"
 
 # Plot
 PLOT_TITLE = "Temperature Over Time"  # Change to signal name
