@@ -26,8 +26,8 @@
 // CIRCUIT Calibration
 #define RESISTOR_0 100.7
 #define RESISTOR_100 137.7
-float circuit_slope = 0.0;
-float circuit_intercept = 0.0;
+float circuit_slope = 0.04;  // Default values
+float circuit_intercept = 99.55;
 
 bool calibrated = false;
 
