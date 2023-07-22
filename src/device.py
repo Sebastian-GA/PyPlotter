@@ -15,6 +15,7 @@ class Device(SerialCommunication):
             for _ in range(num_signals)
         ]
 
+        self.calibrating = False
         self.calibrated0 = False
         self.calibrated100 = False
         self.calibrating_status = 0.0
@@ -25,16 +26,16 @@ class Device(SerialCommunication):
             return
 
         # Calibration
-        if "calibration" in self.received_data:
-            data = self.received_data.split(",")
-            self.calibrated0 = data[1] == "1"
-            self.calibrated100 = data[2] == "1"
-            self.calibrating_status = float(data[3])
+        if self.calibrating:
+            if "calibration" in self.received_data:
+                data = self.received_data.split(",")
+                self.calibrated0 = data[1] == "1"
+                self.calibrated100 = data[2] == "1"
+                self.calibrating_status = float(data[3])
 
-        # If not calibrated, don't process data
-        if not self.calibrated0 or not self.calibrated100:
             return
 
+        # Normal data
         data = self.received_data.split(",")
 
         if len(data) != len(self.signals):
@@ -69,6 +70,7 @@ class Device(SerialCommunication):
         return super().send_data(data, verbose=verbose)
 
     def calibrate(self):
+        self.calibrating = True
         self.calibrated0 = False
         self.calibrated100 = False
         return self.send_data("calibrate", False)

@@ -61,6 +61,7 @@ class SerialCommunication:
         self.device.close()
         if verbose:
             print("Disconnected")
+        return True
 
     def start_thread(self):
         self.thread = Thread(target=self.read_data)

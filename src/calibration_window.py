@@ -30,21 +30,24 @@ class CalibrationWindow(ctk.CTkToplevel):
         self.progressbar.pack()
 
         # -------- Thread -------- #
+        self.done_calibrating = False
         self.thread = Thread(target=self._run)
-        self.flag = Event()
         self.thread.daemon = True
+        self.flag = Event()
         self.flag.set()
         self.thread.start()
 
     def _run(self):
         self.master.disable_interface()
         self.focus_set()
-        time.sleep(2);
+        time.sleep(1)
         self.device.calibrate()
 
         while self.flag.is_set():
             self.focus_set()
+
             if self.device.calibrated0 and self.device.calibrated100:
+                self.done_calibrating = True
                 break
             if not self.device.calibrated0:
                 self.label.configure(text="Calibrating for 0°...")
@@ -55,14 +58,15 @@ class CalibrationWindow(ctk.CTkToplevel):
 
             time.sleep(0.01)
 
-        self.close()
+        if self.done_calibrating:  # Only call self.close() if while ended by success
+            self.label.configure(text="Calibration successful")
+            self.progressbar.set(100)
+            time.sleep(1)
+            self.close()
 
     def close(self):
         self.master.enable_interface()
-        if self.device.calibrated0 and self.device.calibrated100:
-            self.master.connected()
-        else:
-            self.master.disconnect()
+        self.device.calibrating = False
 
         self.flag.clear()
         time.sleep(0.02)
