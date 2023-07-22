@@ -14,7 +14,7 @@
 #define _TIMERINTERRUPT_LOGLEVEL_ 0
 #include "RPi_Pico_TimerInterrupt.h"
 RPI_PICO_Timer ITimer0(0);
-#define READ_INTERVAL_MS 3000  // How often to read the temperature (recommended greater than 2000)
+#define READ_INTERVAL_MS 1000  // How often to read the temperature (recommended greater than 1000)
 
 // Pin definitions
 #define LED_PIN 25
@@ -23,7 +23,7 @@ RPI_PICO_Timer ITimer0(0);
 #define CALIBRATION_100_PIN 21
 
 // ADC Definitions
-#define NUM_SAMPLES 100
+#define NUM_SAMPLES 200
 #define READ_DELAY_MS 2
 
 // PT100 Calibration
@@ -143,7 +143,11 @@ bool TimerHandler0(struct repeating_timer *t) {
     return true;
 }
 
-void loop() {
+void loop() {}
+
+void setup1() {}
+
+void loop1() {
     if (Serial.available() > 0) {
         String var = Serial.readString();
         if (var == "calibrate\n") {

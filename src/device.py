@@ -8,7 +8,7 @@ class Device(SerialCommunication):
     def __init__(self, num_signals=1) -> None:
         super().__init__()
         self.max_data = PLOT_X_LIM
-        self.verbose = True
+        self.verbose = False
 
         self.signals = [
             collections.deque([0] * self.max_data, maxlen=self.max_data)
