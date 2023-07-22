@@ -38,6 +38,7 @@ RPI_PICO_Timer ITimer0(0);
 float circuit_slope = CIRCUIT_SLOPE_DEFAULT;
 float circuit_intercept = CIRCUIT_INTERCEPT_DEFAULT;
 
+#define CALIBRATION_PROGRESS_DELAY_MS 150
 bool calibrating = false;
 
 void setup() {
@@ -93,38 +94,35 @@ void calibrate() {
     calibrating = true;
 
     // Wait for calibration mode to be activated
-    Serial.println("calibration,0,0,0.0");
-    while (digitalRead(CALIBRATION_0_PIN) == HIGH && digitalRead(CALIBRATION_100_PIN) == HIGH) {
-        delay(100);
-    }
+    // while (digitalRead(CALIBRATION_0_PIN) == HIGH && digitalRead(CALIBRATION_100_PIN) == HIGH) {
+    //     delay(100);
+    // }
 
     // Calibration for 0 degrees
-    while (digitalRead(CALIBRATION_0_PIN) == HIGH) {
-        Serial.println("calibration,0,0,0.0");
+    Serial.println("calibration,0,0,0.0");
+    while (digitalRead(CALIBRATION_0_PIN) == HIGH)  // Wait for calibration_0_pin to be activated
         delay(100);
-    }
     delay(500);
     float adc_val_0 = read_adc();
     for (int i = 0; i <= 100; i += 10) {
         Serial.println("calibration,0,0," + String(i / 100.0));
-        delay(100);
+        delay(CALIBRATION_PROGRESS_DELAY_MS);
     }
-
+    Serial.println("calibration,1,0,0.0");
     delay(1000);
 
     // Calibration for 100 degrees
-    Serial.println("calibration,1,0,0.0");
-    while (digitalRead(CALIBRATION_100_PIN) == HIGH) {
-        Serial.println("calibration,1,0,0.0");
+    // Serial.println("calibration,1,0,0.0");
+    while (digitalRead(CALIBRATION_100_PIN) == HIGH)
         delay(100);
-    }
     delay(500);
     float adc_val_100 = read_adc();
     for (int i = 0; i <= 100; i += 10) {
         Serial.println("calibration,1,0," + String(i / 100.0));
-        delay(100);
+        delay(CALIBRATION_PROGRESS_DELAY_MS);
     }
     Serial.println("calibration,1,1,1");
+    delay(1000);
 
     // Calculate slope and intercept
     circuit_slope = (RESISTOR_100 - RESISTOR_0) / (adc_val_100 - adc_val_0);
@@ -146,17 +144,10 @@ bool TimerHandler0(struct repeating_timer *t) {
 }
 
 void loop() {
-    // if (!calibrated) {
-    //     if (Serial.available() > 0) {
-    //         String var = Serial.readString();
-    //         if (var == "calibrate\n") {
-    //             calibrate();
-    //         }
-    //     }
-    // } else {
-    //     // for (int i = 0; i < 360; i += 10) {
-    //     //     Serial.println(40 * sin(i * PI / 180) + 50);
-    //     // }
-    //     Serial.println(read_temperature());
-    // }
+    if (Serial.available() > 0) {
+        String var = Serial.readString();
+        if (var == "calibrate\n") {
+            calibrate();
+        }
+    }
 }
