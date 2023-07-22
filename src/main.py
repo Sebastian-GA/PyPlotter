@@ -151,9 +151,13 @@ class App(ctk.CTk):
         self.port_entry.configure(values=microcontroller.get_ports())
         if len(self.port_entry.cget("values")) > 0:
             self.port_entry.set(self.port_entry.cget("values")[0])
+        else:
+            self.port_entry.set("")
         self.baudrate_entry.configure(values=microcontroller.get_baudrates())
         if len(self.baudrate_entry.cget("values")) >= 16:
-            self.baudrate_entry.set(self.baudrate_entry.cget("values")[16])
+            self.baudrate_entry.set(self.baudrate_entry.cget("values")[16])  # 115200
+        else:
+            self.baudrate_entry.set("")
 
     def pause(self):
         self.plot.pause()
