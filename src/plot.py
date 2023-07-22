@@ -52,13 +52,17 @@ class Plot(ctk.CTkFrame):
     def animate(self, i):
         # self.data.append(self.device.receive_data)
         self.line.set_data(range(self.max_data), self.data)
+
+        # Update legend
         self.line.set_label(self.data[-1])
         self.ax.legend(
             loc="upper left",
-            fontsize=40,
-            facecolor=BG2,
-            edgecolor=BG2,
-            labelcolor="white",
+            fontsize=35,
+            labelcolor=FG,
+            frameon=False,  # Remove legend box
+            borderaxespad=0.2,
+            borderpad=0.2,
+            handler_map={self.line: TextHandler()},  # Display text only
         )
 
     def start(self):
@@ -74,3 +78,10 @@ class Plot(ctk.CTkFrame):
         self.device.clear_data()
         self.line.set_data(range(self.max_data), self.data)
         self.canvas.draw()
+
+
+# Create a custom legend handler to display text only
+class TextHandler(object):
+    def legend_artist(self, legend, orig_handle, fontsize, handlebox):
+        handlebox.set_visible(False)
+        return plt.Text(0, 0, orig_handle, fontsize=fontsize)
