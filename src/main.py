@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from constants import *
+from calibration_window import CalibrationWindow
 from device import Device
 from plot import Plot
 from threading import Thread, Event
@@ -82,13 +83,14 @@ class App(ctk.CTk):
         )
         self.connect_button.grid(row=3, column=0, columnspan=2, pady=(10, 0), ipady=2)
 
-        # REFRESH BUTTON
-        self.refresh_button = ctk.CTkButton(
+        # CALIBRATE BUTTON
+        self.calibrate_button = ctk.CTkButton(
             self.options_frame,
-            text="Refresh",
-            command=self.refresh,
+            text="Calibrate",
+            command=self.calibrate,
+            state="disabled",
         )
-        self.refresh_button.grid(row=4, column=0, columnspan=2, pady=(0, 10), ipady=2)
+        self.calibrate_button.grid(row=4, column=0, columnspan=2, pady=(0, 10), ipady=2)
 
         # START/PAUSE BUTTON
         self.start_pause_button = ctk.CTkButton(
@@ -130,24 +132,32 @@ class App(ctk.CTk):
 
         if microcontroller.connect(port, baudrate):
             self.connect_button.configure(text="Disconnect", command=self.disconnect)
-            self.refresh_button.configure(state="disabled")
+            self.calibrate_button.configure(state="normal")
             self.port_entry.configure(state="disabled")
             self.baudrate_entry.configure(state="disabled")
 
+    def calibrate(self):
+        self.calibration_window = CalibrationWindow(self, microcontroller)
+        
+
     def disconnect(self):
-        microcontroller.disconnect()
-        self.connect_button.configure(text="Connect", command=self.connect)
-        self.refresh_button.configure(state="normal")
-        self.port_entry.configure(state="normal")
-        self.baudrate_entry.configure(state="normal")
+        if microcontroller.disconnect():
+            self.connect_button.configure(text="Connect", command=self.connect)
+            self.calibrate_button.configure(state="disabled")
+            self.port_entry.configure(state="normal")
+            self.baudrate_entry.configure(state="normal")
 
     def refresh(self):
         self.port_entry.configure(values=microcontroller.get_ports())
         if len(self.port_entry.cget("values")) > 0:
             self.port_entry.set(self.port_entry.cget("values")[0])
+        else:
+            self.port_entry.set("")
         self.baudrate_entry.configure(values=microcontroller.get_baudrates())
-        if len(self.baudrate_entry.cget("values")) >= 12:
-            self.baudrate_entry.set(self.baudrate_entry.cget("values")[12])
+        if len(self.baudrate_entry.cget("values")) >= 16:
+            self.baudrate_entry.set(self.baudrate_entry.cget("values")[16])  # 115200
+        else:
+            self.baudrate_entry.set("")
 
     def pause(self):
         self.plot.pause()
@@ -180,6 +190,25 @@ class App(ctk.CTk):
                     self.refresh()
 
             time.sleep(0.1)
+    
+    def disable_interface(self):
+        self.port_entry.configure(state="disabled")
+        self.baudrate_entry.configure(state="disabled")
+        self.connect_button.configure(state="disabled")
+        self.calibrate_button.configure(state="disabled")
+        self.start_pause_button.configure(state="disabled")
+        self.clear_button.configure(state="disabled")
+
+    def enable_interface(self):
+        # self.port_entry.configure(state="normal")
+        # self.baudrate_entry.configure(state="normal")
+        self.port_entry.configure(state="disabled")
+        self.baudrate_entry.configure(state="disabled")
+        self.connect_button.configure(state="normal")
+        self.calibrate_button.configure(state="normal")
+        self.start_pause_button.configure(state="normal")
+        self.clear_button.configure(state="normal")
+        
 
 
 if __name__ == "__main__":

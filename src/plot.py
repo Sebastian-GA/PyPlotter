@@ -16,24 +16,24 @@ class Plot(ctk.CTkFrame):
         self.data = device.signals[0]  # TODO: Plot multiple signals
 
         # Styling plot
-        self.fig, ax = plt.subplots(facecolor=BG1, dpi=70, figsize=(1, 1))
+        self.fig, self.ax = plt.subplots(facecolor=BG1, dpi=70, figsize=(1, 1))
         plt.title(PLOT_TITLE, color=FG, size=FONT[1], family=FONT[0])
         plt.xlim(0, PLOT_X_LIM)
         plt.ylim(PLOT_Y_LIMS)
         plt.xlabel(PLOT_X_LABEL, color=FG, size=FONT[1], family=FONT[0])
         plt.ylabel(PLOT_Y_LABEL, color=FG, size=FONT[1], family=FONT[0])
 
-        ax.tick_params(
+        self.ax.tick_params(
             direction="out", length=5, width=2, colors=FG, grid_color=FG, grid_alpha=0.5
         )
-        ax.set_facecolor(BG2)
-        ax.spines["bottom"].set_color(BG1)
-        ax.spines["top"].set_color(BG1)
-        ax.spines["left"].set_color(BG1)
-        ax.spines["right"].set_color(BG1)
+        self.ax.set_facecolor(BG2)
+        self.ax.spines["bottom"].set_color(BG1)
+        self.ax.spines["top"].set_color(BG1)
+        self.ax.spines["left"].set_color(BG1)
+        self.ax.spines["right"].set_color(BG1)
 
         # Styling plot line
-        (self.line,) = ax.plot(
+        (self.line,) = self.ax.plot(
             [],
             [],
             color=PLOT_LINE_COLOR,
@@ -53,6 +53,18 @@ class Plot(ctk.CTkFrame):
         # self.data.append(self.device.receive_data)
         self.line.set_data(range(self.max_data), self.data)
 
+        # Update legend
+        self.line.set_label(self.data[-1])
+        self.ax.legend(
+            loc="upper left",
+            fontsize=35,
+            labelcolor=FG,
+            frameon=False,  # Remove legend box
+            borderaxespad=0.2,
+            borderpad=0.2,
+            handler_map={self.line: TextHandler()},  # Display text only
+        )
+
     def start(self):
         self.ani = animation.FuncAnimation(
             self.fig, self.animate, interval=100, cache_frame_data=False
@@ -66,3 +78,10 @@ class Plot(ctk.CTkFrame):
         self.device.clear_data()
         self.line.set_data(range(self.max_data), self.data)
         self.canvas.draw()
+
+
+# Create a custom legend handler to display text only
+class TextHandler(object):
+    def legend_artist(self, legend, orig_handle, fontsize, handlebox):
+        handlebox.set_visible(False)
+        return plt.Text(0, 0, orig_handle, fontsize=fontsize)
