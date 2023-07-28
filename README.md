@@ -1,4 +1,4 @@
-# Python Serial Plotter
+# PyPlotter
 
 PyPlotter is a graphical user interface (GUI) application written in Python that allows to plot data received from a serial port. It is designed to work perfectly with microcontrollers like Arduino, ESP32, or any other device that communicates data via a serial connection.
 
